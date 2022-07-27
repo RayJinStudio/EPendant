@@ -1,0 +1,21 @@
+{
+    "project_name":       "bootloader",
+    "project_path":       "/home/rayjin/software/espidf/esp-idf/components/bootloader/subproject",
+    "build_dir":          "/home/rayjin/esp/hello_world/build/bootloader",
+    "config_file":        "/home/rayjin/esp/hello_world/sdkconfig",
+    "config_defaults":    "",
+    "app_elf":            "bootloader.elf",
+    "app_bin":            "bootloader.bin",
+    "git_revision":       "v4.4.1-dirty",
+    "target":             "esp32c3",
+    "rev":                "",
+    "phy_data_partition": "",
+    "monitor_baud" :      "115200",
+    "monitor_toolprefix": "riscv32-esp-elf-",
+    "config_environment" : {
+        "COMPONENT_KCONFIGS" : "/home/rayjin/software/espidf/esp-idf/components/efuse/Kconfig;/home/rayjin/software/espidf/esp-idf/components/esp32c3/Kconfig;/home/rayjin/software/espidf/esp-idf/components/esp_common/Kconfig;/home/rayjin/software/espidf/esp-idf/components/esp_hw_support/Kconfig;/home/rayjin/software/espidf/esp-idf/components/esp_system/Kconfig;/home/rayjin/software/espidf/esp-idf/components/freertos/Kconfig;/home/rayjin/software/espidf/esp-idf/components/hal/Kconfig;/home/rayjin/software/espidf/esp-idf/components/log/Kconfig;/home/rayjin/software/espidf/esp-idf/components/newlib/Kconfig;/home/rayjin/software/espidf/esp-idf/components/spi_flash/Kconfig",
+        "COMPONENT_KCONFIGS_PROJBUILD" : "/home/rayjin/software/espidf/esp-idf/components/bootloader/Kconfig.projbuild;/home/rayjin/software/espidf/esp-idf/components/esp_rom/Kconfig.projbuild;/home/rayjin/software/espidf/esp-idf/components/esptool_py/Kconfig.projbuild;/home/rayjin/software/espidf/esp-idf/components/partition_table/Kconfig.projbuild"
+    },
+    "build_components" : [ "bootloader", "bootloader_support", "efuse", "esp32c3", "esp_common", "esp_hw_support", "esp_rom", "esp_system", "esptool_py", "freertos", "hal", "log", "main", "micro-ecc", "newlib", "partition_table", "riscv", "soc", "spi_flash", "" ],
+    "build_component_paths" : [ "/home/rayjin/software/espidf/esp-idf/components/bootloader", "/home/rayjin/software/espidf/esp-idf/components/bootloader_support", "/home/rayjin/software/espidf/esp-idf/components/efuse", "/home/rayjin/software/espidf/esp-idf/components/esp32c3", "/home/rayjin/software/espidf/esp-idf/components/esp_common", "/home/rayjin/software/espidf/esp-idf/components/esp_hw_support", "/home/rayjin/software/espidf/esp-idf/components/esp_rom", "/home/rayjin/software/espidf/esp-idf/components/esp_system", "/home/rayjin/software/espidf/esp-idf/components/esptool_py", "/home/rayjin/software/espidf/esp-idf/components/freertos", "/home/rayjin/software/espidf/esp-idf/components/hal", "/home/rayjin/software/espidf/esp-idf/components/log", "/home/rayjin/software/espidf/esp-idf/components/bootloader/subproject/main", "/home/rayjin/software/espidf/esp-idf/components/bootloader/subproject/components/micro-ecc", "/home/rayjin/software/espidf/esp-idf/components/newlib", "/home/rayjin/software/espidf/esp-idf/components/partition_table", "/home/rayjin/software/espidf/esp-idf/components/riscv", "/home/rayjin/software/espidf/esp-idf/components/soc", "/home/rayjin/software/espidf/esp-idf/components/spi_flash", "" ]
+}
