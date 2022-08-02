@@ -5,6 +5,8 @@
 #include "esp_log.h"
 #include "esp_event.h"
 #include "esp_tls.h"
+#include "irremote_http.hpp"
+
 #if CONFIG_MBEDTLS_CERTIFICATE_BUNDLE
 #include "esp_crt_bundle.h"
 #endif
@@ -16,11 +18,29 @@
 int resplen;
 char respbuf[1024];
 
-char login[] = "{\"appKey\":\"0990c9b2da8b086fd5e980ba45b2d596\",\"appSecret\":\"7398b933041fd8334ffd7b930d7fa034\",\"appType\":\"2\"}";
+void (*postCb) (int, char*);
 
-void Get_CurrentData(char *data)
+void initPostEntitry(HttpPostEntity* entity)
 {
-    strcpy(data,login);
+    entity->url = (char*)malloc(1024 * sizeof(char));
+    entity->body = (char*)malloc(1024 * sizeof(char));
+    entity->postCb = NULL;
+}
+
+void setHttpPostURL(HttpPostEntity* entity, char* s)
+{
+    strcpy(entity->url,s);
+}
+
+void setHttpPostBody(HttpPostEntity* entity, char* s)
+{
+    strcpy(entity->body,s);
+}
+
+void setHttpPostCb(HttpPostEntity* entity, void (*cb) (int, char*))
+{
+    postCb = cb;
+    entity->postCb = cb;
 }
 
 esp_err_t _http_event_handle(esp_http_client_event_t *evt)
@@ -47,14 +67,12 @@ esp_err_t _http_event_handle(esp_http_client_event_t *evt)
                 resplen = evt->data_len;
                 strcpy(respbuf, (char*)evt->data);
                 respbuf[resplen] = '\0';
-                // printf("%.*s\n", evt->data_len, (char*)evt->data);
             }
             else
             {
                 resplen += evt->data_len;
                 strcat(respbuf, (char*)evt->data);
                 respbuf[resplen] = '\0';
-                //printf("%.*s\n", evt->data_len, (char*)evt->data);
             }
             break;
         case HTTP_EVENT_ON_FINISH:
@@ -69,27 +87,24 @@ esp_err_t _http_event_handle(esp_http_client_event_t *evt)
 }
 
 
-static void httpPost()
+static void httpPost(HttpPostEntity* entity)
 {
     resplen = 0;
     memset(respbuf, 0, sizeof(respbuf));
 
+    printf("%s %s\n",entity->url,entity->body);
+
     esp_http_client_config_t config =
     {
-        .url = "http://irext.net",
+        .url = entity->url,
         .event_handler = _http_event_handle,
         .buffer_size_tx = 1024,
     };
     esp_http_client_handle_t client = esp_http_client_init(&config);
 
-    char post_data1[1024] = {0};
-    Get_CurrentData(post_data1);
-    //printf("%s\n",post_data1);
-
-    esp_http_client_set_url(client, "http://irext.net/irext-server/app/app_login");
     esp_http_client_set_header(client,"Content-Type","application/json");
     esp_http_client_set_method(client, HTTP_METHOD_POST);    
-    esp_http_client_set_post_field(client, post_data1, strlen(post_data1));
+    esp_http_client_set_post_field(client, entity->body, strlen(entity->body));
 
     esp_err_t err  = esp_http_client_perform(client);
     if (err == ESP_OK)
@@ -97,11 +112,13 @@ static void httpPost()
         ESP_LOGI("http", "HTTP POST Status = %d, content_length = %d",
                 esp_http_client_get_status_code(client),
                 esp_http_client_get_content_length(client));
-        // int len =  esp_http_client_get_content_length(client);
-        // int read_len = 0;
-        // char buf[1024] = {0};
-        // read_len = esp_http_client_read(client, buf, sizeof(buf));
-        // printf("\nrecv data len:%d %d %s\n",read_len,len,buf);
+        if(postCb==entity->postCb) entity->postCb(resplen, respbuf);
+        else
+        {
+            entity->postCb = postCb;
+            printf("error\n");
+            entity->postCb(resplen, respbuf);
+        }
     }
     else
     {
@@ -109,9 +126,9 @@ static void httpPost()
     }
 }
 
-void httpPostTask(void *pvParameters)
+void httpPostTask(void *entity)
 {
     ESP_LOGI("http", "Connected to AP, begin http example");
-    httpPost();
+    httpPost((HttpPostEntity*)entity);
     vTaskDelete(NULL);
 }

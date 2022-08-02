@@ -25,9 +25,25 @@ static IRRemoteAppRunData *run_data = NULL;
 
 static IRRemoteAppForeverData forever_data;
 
+char token[256];
+
+void setToken(int len, char* json)
+{
+    cJSON* jsonObj = cJSON_Parse(json);
+    cJSON* entity = cJSON_GetObjectItem(jsonObj, "entity");
+    cJSON* tokenObj = cJSON_GetObjectItem(entity, "token");
+    strcpy(token, tokenObj->valuestring);
+    printf("%s\n",token);
+}
+
 int irremote_init(AppController *sys)
 {
-    xTaskCreate(&httpPostTask, "http_post_task", 8192*2, NULL, 5, NULL);
+    HttpPostEntity entity;
+    initPostEntitry(&entity);
+    setHttpPostURL(&entity, "http://irext.net/irext-server/app/app_login");
+    setHttpPostBody(&entity, "{\"appKey\":\"0990c9b2da8b086fd5e980ba45b2d596\",\"appSecret\":\"7398b933041fd8334ffd7b930d7fa034\",\"appType\":\"2\"}");
+    setHttpPostCb(&entity, setToken);
+    xTaskCreate(&httpPostTask, "http_post_task", 8192*2, (void*)&entity, 5, NULL);
 
     irremote_gui_init();
     run_data = (IRRemoteAppRunData *)calloc(1, sizeof(IRRemoteAppRunData));
