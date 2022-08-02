@@ -24,6 +24,11 @@ set(srcs
         "app/game_2048/game_2048_ico.c"
         "app/game_2048/game_2048.cpp"
         "app/game_2048/game2048_contorller.cpp"
+
+        "app/irremote/irremote_gui.cpp"
+        "app/irremote/irremote_ico.c"
+        "app/irremote/irremote.cpp"
+        "app/irremote/irremote_http.cpp"
         
         "main.cpp"
     )

@@ -11,10 +11,11 @@
 #include "common/common.h"
 
 #include "sys/app_controller.h"
-#include "sys/wifi_controller.h"
+#include "sys/wifi_controller.h"    
 
 #include "app/example/example.h"
 #include "app/game_2048/game_2048.h"
+#include "app/irremote/irremote.h"
 
 
 static gpio_num_t BLINK_GPIO = (gpio_num_t)12;
@@ -90,7 +91,7 @@ static void nec_tx_init()
     rmt_tx.gpio_num = (gpio_num_t)19;
     rmt_tx.mem_block_num = 2;   //由于格力红外有70个item，使用2个块，64×2=128个item
     rmt_tx.clk_div = 80;   
-    rmt_tx.tx_config.loop_en = true;   //关闭循环发射，只发射一次
+    rmt_tx.tx_config.loop_en = false;   //关闭循环发射，只发射一次
     rmt_tx.tx_config.carrier_duty_percent = 50; //载波占空比为50
     rmt_tx.tx_config.carrier_freq_hz = 38000;   //载波频率38khz 红外
     rmt_tx.tx_config.carrier_level = RMT_CARRIER_LEVEL_HIGH; //载波高电平
@@ -106,87 +107,19 @@ static void nec_tx_init()
     rmt_driver_install(rmt_tx.channel, 0, 0);
 }
 
-
-uint32_t decoded[] = {9000,4500,560,565,560,565,560,1690,560,1690,560,565,560,565,560,1690,560,565,560,1690,560,565,560,1690,560,565,560,565,560,1690,560,1690,560,565,560,565,560,565,560,565,560,565,560,1690,560,565,560,565,560,565,560,1690,560,1690,560,1690,560,1690,560,565,560,1690,560,1690,560,1690,560,0}; 
-
-/*
- * @brief 填充item的电平和电平时间 需要将时间转换成计数器的计数值 /10*RMT_TICK_10_US
- */
-static inline void nec_fill_item_level(rmt_item32_t* item, int high_us, int low_us)
+esp_err_t ConnectWifi()
 {
-    const int RMT_CLK_DIV = 80;                                   // RMT计数器时钟分频器
-	const int RMT_TICK_10_US = (80000000 / RMT_CLK_DIV / 100000);
-    item->level0 = 1;
-    item->duration0 = (high_us);
-    item->level1 = 0;
-    item->duration1 = (low_us);
+    wifi_config_t wifi_config;
+    wifi_sta_config_t sta_config;
+    strcpy((char*)(sta_config.ssid),"Letv");
+    strcpy((char*)(sta_config.password),"jjs550600");
+    wifi_config.sta = sta_config;
+    esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
+    esp_err_t err = esp_wifi_connect();
+    if(err == ESP_OK) printf("success\n");
+    else ESP_ERROR_CHECK(err);
+    return err;
 }
-
-
-/*
- * irext_build
- * brief：通过irext构建item 使用全局变量
- */
-static void irext_build(rmt_item32_t* item,size_t item_num)
-{
-	int i = 0;
-
-    nec_fill_item_level(item, decoded[0], decoded[1]);
-    for (i = 1; i < item_num;i++)
-	{
-        item++;
-		nec_fill_item_level(item, decoded[2*i], decoded[2*i + 1]);
-		
-	}
-}
-
-
-static const rmt_item32_t morse_esp[] = {
-
-	{{{ 9000, 1, 4500, 0 }}}, 
-	{{{ 560, 1, 565, 0 }}}, 
-
-	{{{ 560, 1, 565, 0 }}}, 
-	{{{ 560, 1, 565, 0 }}}, 
-	{{{ 560, 1, 565, 0 }}}, 
-	{{{ 560, 1, 1690, 0 }}},  
-
-	{{{ 560, 1, 1690, 0 }}}, 
-	{{{ 560, 1, 1690, 0 }}}, 
-	{{{ 560, 1, 1690, 0 }}}, 
-	{{{ 560, 1, 1690, 0 }}}, 
-	{{{ 560, 1, 565, 0 }}},  
-	{{{ 560, 1, 565, 0 }}}, 
-
-	{{{ 560, 1, 565, 0 }}}, 
-};
-
-
-void send()
-{
-    rmt_item32_t *item;	//发射item
-    size_t size = 0;
-    int item_num = 0;
-
-    item_num = 34;   //此处为70
-    size = (sizeof(rmt_item32_t) * item_num); //计算70个item所需的字节空间
-    item = (rmt_item32_t *)malloc(size);	//记得free
-    memset((void *)item, 0, size);
-    irext_build(item, item_num); //根据要发射的数据，填充item
-    //printf("hhhhh\n");
-    //printf("%d %d\n",item[0].duration0,item[0].duration1);
-
-    // while(1)
-    // {
-        rmt_write_items(RMT_CHANNEL_0, item, item_num, true); //将item写入通道对应的RAM并进入阻塞
-
-        //rmt_write_items(RMT_CHANNEL_0, morse_esp, sizeof(morse_esp) / sizeof(morse_esp[0]), true);
-    //     vTaskDelay(5000 / portTICK_PERIOD_MS);
-    // }
-    rmt_wait_tx_done(RMT_CHANNEL_0, portMAX_DELAY); //等待发送完成 进入阻
-    free(item);
-}
-
 
 extern "C" void app_main(void)
 {
@@ -196,6 +129,7 @@ extern "C" void app_main(void)
     appctrl->init();
     appctrl->app_install(&example_app);
     appctrl->app_install(&game_2048_app);
+    appctrl->app_install(&irremote_app);
     
     gpio_reset_pin(BLINK_GPIO);
     gpio_reset_pin(LED_R_IO);
@@ -210,18 +144,17 @@ extern "C" void app_main(void)
     gpio_set_direction(KeyIO18, GPIO_MODE_INPUT);
 
     xTaskCreate(key_read,"key",4096*2,NULL,2,NULL);
+
     
     init_nvs();
+
+    nec_tx_init();
     
     initWifiSTA();
 
-    nec_tx_init();
-    send();
-    // while (1)
-	// {
-	// 	rmt_write_items(RMT_CHANNEL_0, morse_esp, sizeof(morse_esp) / sizeof(morse_esp[0]), true);
-	// 	vTaskDelay(100 / portTICK_PERIOD_MS);
+    // char ssid[]="Letv";
+    // char pwd[]="jjs550600";
 
-	// }
+    //ConnectWifi();
 }
 

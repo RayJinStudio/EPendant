@@ -57,7 +57,7 @@ void AppController::init(void)
     appList[0]->app_image = &app_loading;
     appList[0]->app_name = "Loading...";
     appTypeList[0] = APP_TYPE_REAL_TIME;
-     printf("hhi\n");
+    // printf("hhi\n");
     app_control_display_scr(appList[cur_app_index]->app_image,
                              appList[cur_app_index]->app_name,
                              LV_SCR_LOAD_ANIM_NONE, true);
@@ -173,10 +173,11 @@ int AppController::main_process(UserAction *act_info)
             //Serial.println(String("Current App: ") + appList[cur_app_index]->app_name);
         }
         else if (ACTIVE_TYPE::GO_FORWORD == act_info->active)
-        {
-            app_exit_flag = 1; // 进入app
+        { // 进入app
             if (NULL != appList[cur_app_index]->app_init)
             {
+                app_exit_flag = 1;
+                memu_clean();
                 (*(appList[cur_app_index]->app_init))(this); // 执行APP初始化
             }
         }

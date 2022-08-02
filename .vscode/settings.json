@@ -21,6 +21,13 @@
     "wifi_controller.h": "c",
     "ratio": "cpp",
     "list": "c",
-    "thread": "cpp"
+    "thread": "cpp",
+    "irremote_gui.h": "c",
+    "numeric": "cpp",
+    "future": "cpp",
+    "system_error": "cpp",
+    "regex": "cpp",
+    "esp_netif.h": "c",
+    "*.inc": "cpp"
   }
 }

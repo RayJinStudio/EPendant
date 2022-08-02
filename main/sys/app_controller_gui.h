@@ -22,6 +22,7 @@ extern "C"
     void display_app_scr_init(const void *src_img, const char * app_name);
     void app_control_display_scr(const void *src_img, const char * app_name,
                                  lv_scr_load_anim_t anim_type, bool force);
+    void memu_clean();
 
 #ifdef __cplusplus
 } /* extern "C" */

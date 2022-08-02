@@ -48,6 +48,12 @@ void app_control_gui_init(void)
     
 }
 
+void memu_clean()
+{
+    lv_obj_t *act_obj = lv_scr_act();
+    if(act_obj!=NULL) lv_obj_clean(act_obj);
+}
+
 void app_control_gui_release(void)
 {
     if (NULL != app_scr)
