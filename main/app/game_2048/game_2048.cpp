@@ -5,6 +5,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include <time.h>
 
 #define G2048_APP_NAME "2048"
 
@@ -52,7 +53,7 @@ static int game_2048_init(AppController *sys)
 {
     // 初始化运行时的参数
     game_2048_gui_init();
-
+    srand(time(NULL));
     //randomSeed(analogRead(25));
     // 初始化运行时参数
     run_data = (Game2048AppRunData *)calloc(1, sizeof(Game2048AppRunData));
@@ -68,13 +69,13 @@ static int game_2048_init(AppController *sys)
         1,                            /*任务的优先级*/
         &run_data->xHandle_task_one); /*任务句柄*/
 
-    run_data->xReturned_task_two = xTaskCreate(
-        taskTwo,                      /*任务函数*/
-        "TaskTwo",                    /*带任务名称的字符串*/
-        10000,                        /*堆栈大小，单位为字节*/
-        NULL,                         /*作为任务输入传递的参数*/
-        1,                            /*任务的优先级*/
-        &run_data->xHandle_task_two); /*任务句柄*/
+    // run_data->xReturned_task_two = xTaskCreate(
+    //     taskTwo,                      /*任务函数*/
+    //     "TaskTwo",                    /*带任务名称的字符串*/
+    //     10000,                        /*堆栈大小，单位为字节*/
+    //     NULL,                         /*作为任务输入传递的参数*/
+    //     1,                            /*任务的优先级*/
+    //     &run_data->xHandle_task_two); /*任务句柄*/
     //刷新棋盘显示
     int new1 = game.addRandom();
     int new2 = game.addRandom();

@@ -1,6 +1,9 @@
 #ifndef APP_CONTROLLER_H
 #define APP_CONTROLLER_H
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 #include "interface.h"
 #include "../common/common.h"
 #include <list>
@@ -82,7 +85,7 @@ private:
     int cur_app_index;     // 当前运行的APP下标
     int pre_app_index;     // 上一次运行的APP下标
 
-    // TimerHandle_t xTimerEventDeal; // 事件处理定时器
+    // xTimerHandle xTimerEventDeal; // 事件处理定时器
 
 public:
     // SysUtilConfig sys_cfg;

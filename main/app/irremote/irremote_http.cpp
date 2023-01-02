@@ -40,7 +40,7 @@ void setHttpPostBody(HttpPostEntity* entity, char* s)
 void setHttpPostCb(HttpPostEntity* entity, void (*cb) (int, char*))
 {
     postCb = cb;
-    entity->postCb = cb;
+    entity->postCb = postCb;
 }
 
 esp_err_t _http_event_handle(esp_http_client_event_t *evt)
@@ -86,6 +86,7 @@ esp_err_t _http_event_handle(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
+bool flag =0;
 
 static void httpPost(HttpPostEntity* entity)
 {
@@ -115,9 +116,14 @@ static void httpPost(HttpPostEntity* entity)
         if(postCb==entity->postCb) entity->postCb(resplen, respbuf);
         else
         {
-            entity->postCb = postCb;
-            printf("error\n");
-            entity->postCb(resplen, respbuf);
+            postCb(resplen, respbuf);
+            // if(!flag)
+            // {
+            //     //flag =1;
+            //     entity->postCb = postCb;
+            // }
+            // printf("error\n");
+            // entity->postCb(resplen, respbuf);
         }
     }
     else

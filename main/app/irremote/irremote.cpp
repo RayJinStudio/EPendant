@@ -14,6 +14,11 @@
 
 struct IRRemoteAppRunData
 {
+    char token[256];
+    int id;
+    Category categories[20];
+    //char categoryStr[512] = {0};
+    int categoryLen;
 };
 
 struct IRRemoteAppForeverData
@@ -25,18 +30,21 @@ static IRRemoteAppRunData *run_data = NULL;
 
 static IRRemoteAppForeverData forever_data;
 
-char token[256];
 
 void setToken(int len, char* json)
 {
+    if(!len) printf("hi\n");
     cJSON* jsonObj = cJSON_Parse(json);
     cJSON* entity = cJSON_GetObjectItem(jsonObj, "entity");
     cJSON* tokenObj = cJSON_GetObjectItem(entity, "token");
-    strcpy(token, tokenObj->valuestring);
-    printf("%s\n",token);
+    cJSON* idObj = cJSON_GetObjectItem(entity, "id");
+    strcpy(run_data->token, tokenObj->valuestring);
+    run_data->id = idObj->valueint;
+    printf("%d %s\n",run_data->id, run_data->token);
+    getCategories();
 }
 
-int irremote_init(AppController *sys)
+void getToken()
 {
     HttpPostEntity entity;
     initPostEntitry(&entity);
@@ -44,11 +52,51 @@ int irremote_init(AppController *sys)
     setHttpPostBody(&entity, "{\"appKey\":\"0990c9b2da8b086fd5e980ba45b2d596\",\"appSecret\":\"7398b933041fd8334ffd7b930d7fa034\",\"appType\":\"2\"}");
     setHttpPostCb(&entity, setToken);
     xTaskCreate(&httpPostTask, "http_post_task", 8192*2, (void*)&entity, 5, NULL);
+}
+
+void setCategories(int len, char* json)
+{
+    if(!len) return;
+    cJSON* jsonObj = cJSON_Parse(json);
+    cJSON* entity = cJSON_GetObjectItem(jsonObj, "entity");
+    int entityLen = cJSON_GetArraySize(entity);
+    run_data->categoryLen = entityLen;
+    for(int i = 0; i < entityLen; i++)
+    {
+        cJSON* item = cJSON_GetArrayItem(entity, i);
+        cJSON* idObj = cJSON_GetObjectItem(item, "id");
+        cJSON* nameObj = cJSON_GetObjectItem(item, "name");
+
+        (run_data->categories[i]).id = idObj->valueint;
+        strcpy((run_data->categories[i]).name, nameObj->valuestring);
+
+        //strcat(run_data->categoryStr, nameObj->valuestring);
+        //if(i != entityLen - 1) strcat(run_data->categoryStr, "\n");
+        
+        printf("%d %s\n",(run_data->categories[i]).id, (run_data->categories[i]).name);
+        setcategoryRoller((run_data->categories[i]).name);
+    }
+    
+}
+
+void getCategories()
+{
+    HttpPostEntity entity;
+    initPostEntitry(&entity);
+    setHttpPostURL(&entity, "http://irext.net/irext-server/indexing/list_categories");
+    char body[1024]={0};
+    sprintf(body,"{\"id\":\"%d\",\"token\":\"%s\",\"from\":\"0\",\"count\":\"20\"}",run_data->id, run_data->token);
+    setHttpPostBody(&entity, body);
+    setHttpPostCb(&entity, setCategories);
+    xTaskCreate(&httpPostTask, "http_post_task", 8192*2, (void*)&entity, 5, NULL);
+}
+
+int irremote_init(AppController *sys)
+{
+    run_data = (IRRemoteAppRunData *)calloc(1, sizeof(IRRemoteAppRunData));
 
     irremote_gui_init();
-    run_data = (IRRemoteAppRunData *)calloc(1, sizeof(IRRemoteAppRunData));
-      
-
+    
     return 0;
 }
 

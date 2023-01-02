@@ -4,6 +4,8 @@
 #include "stdio.h"
 #include "driver/gpio.h"
 
+UserAction ua;
+
 const char *app_event_type_info[] = {"APP_MESSAGE_WIFI_CONN", "APP_MESSAGE_WIFI_AP",
                                      "APP_MESSAGE_WIFI_ALIVE", "APP_MESSAGE_WIFI_DISCONN",
                                      "APP_MESSAGE_UPDATE_TIME", "APP_MESSAGE_MQTT_DATA",
@@ -11,12 +13,19 @@ const char *app_event_type_info[] = {"APP_MESSAGE_WIFI_CONN", "APP_MESSAGE_WIFI_
                                      "APP_MESSAGE_READ_CFG", "APP_MESSAGE_WRITE_CFG",
                                      "APP_MESSAGE_NONE"};
 
-volatile static bool isRunEventDeal = false;
+// volatile static bool isRunEventDeal = false;
+extern AppController* appctrl;
 
-// void eventDealHandle(TimerHandle_t xTimer)
-// {
-//     isRunEventDeal = true;
-// }
+void eventDealHandle(void *pvParameter)
+{
+    while(1)
+    {
+        if(ua.isValid)
+            appctrl->main_process(&ua);
+        ua.isValid = 0;
+        vTaskDelay(10/portTICK_RATE_MS);
+    }
+}
 
 AppController::AppController(const char *name)
 {
@@ -58,10 +67,11 @@ void AppController::init(void)
     appList[0]->app_name = "Loading...";
     appTypeList[0] = APP_TYPE_REAL_TIME;
     // printf("hhi\n");
-    app_control_display_scr(appList[cur_app_index]->app_image,
-                             appList[cur_app_index]->app_name,
-                             LV_SCR_LOAD_ANIM_NONE, true);
-    // Display();
+    // app_control_display_scr(appList[cur_app_index]->app_image,
+    //                          appList[cur_app_index]->app_name,
+    //                          LV_SCR_LOAD_ANIM_NONE, true);
+    Display();
+    xTaskCreate(eventDealHandle,"eventDeal",1024*10,NULL,806,NULL);
 }
 
 void AppController::Display()
@@ -156,14 +166,14 @@ int AppController::main_process(UserAction *act_info)
     {
         // 当前没有进入任何app
         lv_scr_load_anim_t anim_type = LV_SCR_LOAD_ANIM_NONE;
-        if (ACTIVE_TYPE::TURN_RIGHT == act_info->active)
+        if (ACTIVE_TYPE::TURN_LEFT == act_info->active)
         {
             anim_type = LV_SCR_LOAD_ANIM_MOVE_RIGHT;
             pre_app_index = cur_app_index;
             cur_app_index = (cur_app_index + 1) % app_num;
             //Serial.println(String("Current App: ") + appList[cur_app_index]->app_name);
         }
-        else if (ACTIVE_TYPE::TURN_LEFT == act_info->active)
+        else if (ACTIVE_TYPE::TURN_RIGHT == act_info->active)
         {
             anim_type = LV_SCR_LOAD_ANIM_MOVE_LEFT;
             pre_app_index = cur_app_index;
@@ -187,7 +197,8 @@ int AppController::main_process(UserAction *act_info)
             app_control_display_scr(appList[cur_app_index]->app_image,
                                     appList[cur_app_index]->app_name,
                                     anim_type, false);
-            //delay(300);
+            printf("hi\n");
+            //delay(5000);
         }
     }
     else

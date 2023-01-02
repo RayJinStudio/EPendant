@@ -14,8 +14,7 @@ extern "C"
     void irremote_gui_init(void);
     void display_irremote(const char *file_name, lv_scr_load_anim_t anim_type);
     void irremote_gui_del(void);
-    void addItem(char *ssid);
-    void NextItem();
+    void setcategoryRoller(char *str);
 
 #ifdef __cplusplus
 } /* extern "C" */

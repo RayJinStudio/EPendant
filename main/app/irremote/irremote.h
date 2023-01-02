@@ -5,6 +5,14 @@
 
 extern APP_OBJ irremote_app;
 
+typedef struct Category
+{
+    int id;
+    char name[32];
+};
+
 void send();
+void getToken();
+void getCategories();
 
 #endif

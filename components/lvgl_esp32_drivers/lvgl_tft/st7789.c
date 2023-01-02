@@ -101,7 +101,9 @@ void st7789_init(void)
     gpio_set_level(ST7789_RST, 1);
     vTaskDelay(100 / portTICK_RATE_MS);
 #else
-    st7789_send_cmd(ST7789_SWRESET);
+    printf("ST7789 soft rest\n");
+    for(int i=0;i<5;i++)
+        st7789_send_cmd(ST7789_SWRESET);
 #endif
 
     printf("ST7789 initialization.\n");
@@ -145,6 +147,17 @@ void st7789_flush(lv_disp_drv_t * drv, const lv_area_t * area, lv_color_t * colo
     #elif (CONFIG_LV_DISPLAY_ORIENTATION_LANDSCAPE_INVERTED)
         offsety1 += 80;
         offsety2 += 80;
+    #endif
+#elif (LV_HOR_RES_MAX == 240) && (LV_VER_RES_MAX == 280)
+    #if (CONFIG_LV_DISPLAY_ORIENTATION_PORTRAIT_INVERTED)
+        offsety1 += 20;
+        offsety2 += 20;
+    #elif (CONFIG_LV_DISPLAY_ORIENTATION_PORTRAIT)
+        offsetx1 -= 20;
+        offsetx2 -= 20;
+    #elif (CONFIG_LV_DISPLAY_ORIENTATION_LANDSCAPE_INVERTED)
+        offsety1 -= 20;
+        offsety2 -= 20;
     #endif
 #elif (LV_HOR_RES_MAX == 240) && (LV_VER_RES_MAX == 135)
     #if (CONFIG_LV_DISPLAY_ORIENTATION_PORTRAIT) || \

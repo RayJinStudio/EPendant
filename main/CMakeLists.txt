@@ -10,6 +10,8 @@ set(srcs
         "Rdriver/mpu6050.cpp"
         "Rdriver/kalmanfilter.cpp"
         "Rdriver/i2c.cpp"
+        "Rdriver/CST816T.cpp"
+        "Rdriver/touch_driver.cpp"
 
         "sys/app_controller.cpp"
         "sys/app_controller_gui.c"

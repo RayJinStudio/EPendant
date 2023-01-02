@@ -9,7 +9,7 @@ extern "C"
 #include "lvgl.h"
 #include "lvgl_helpers.h"
 
-#define IMGSIZE 80
+#define IMGSIZE 128
 #define IMGSTART (LV_HOR_RES_MAX-IMGSIZE)/2
 
 #define ANIEND                      \

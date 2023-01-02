@@ -28,6 +28,12 @@
     "system_error": "cpp",
     "regex": "cpp",
     "esp_netif.h": "c",
-    "*.inc": "cpp"
+    "*.inc": "cpp",
+    "deque": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp",
+    "initializer_list": "cpp",
+    "random": "c",
+    "typeinfo": "cpp"
   }
 }

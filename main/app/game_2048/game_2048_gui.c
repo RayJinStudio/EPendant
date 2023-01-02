@@ -82,31 +82,31 @@ void born(int i)
     lv_anim_set_var(&a, img[i]);
     lv_anim_set_time(&a, 300);
 
-    //lv_anim_path_t path;
-    //lv_anim_path_init(&path);
-    //lv_anim_path_set_cb(&path, lv_anim_path_linear);
+    // lv_anim_path_t path;
+    // lv_anim_path_init(&path);
+    // lv_anim_path_set_cb(&path, lv_anim_path_linear);
 
     /* 在动画中设置路径 */
-    //lv_anim_set_path(&a, &path);
+    lv_anim_set_path_cb(&a, lv_anim_path_linear);
 
-    // lv_anim_set_values(&a, 0, 50);
-    // lv_anim_start(&a);
+    lv_anim_set_values(&a, 0, 50);
+    lv_anim_start(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_x);
-    // lv_anim_set_values(&a, lv_obj_get_x(img[i]) + 25, lv_obj_get_x(img[i]));
-    // lv_anim_start(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_x);
+    lv_anim_set_values(&a, lv_obj_get_x(img[i]) + 25, lv_obj_get_x(img[i]));
+    lv_anim_start(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_y);
-    // lv_anim_set_values(&a, lv_obj_get_y(img[i]) + 25, lv_obj_get_y(img[i]));
-    // lv_anim_start(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_y);
+    lv_anim_set_values(&a, lv_obj_get_y(img[i]) + 25, lv_obj_get_y(img[i]));
+    lv_anim_start(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_img_set_offset_x);
-    // lv_anim_set_values(&a, -25, 0);
-    // lv_anim_start(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_img_set_offset_x);
+    lv_anim_set_values(&a, -25, 0);
+    lv_anim_start(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_img_set_offset_y);
-    // lv_anim_set_values(&a, -25, 0);
-    // lv_anim_start(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_img_set_offset_y);
+    lv_anim_set_values(&a, -25, 0);
+    lv_anim_start(&a);
 }
 
 /*
@@ -115,40 +115,40 @@ void born(int i)
  */
 void zoom(int i)
 {
-    // lv_anim_t a;
-    // lv_anim_init(&a);
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)anim_size_cb);
-    // lv_anim_set_var(&a, img[i]);
-    // lv_anim_set_delay(&a, 400);
-    // lv_anim_set_time(&a, 100);
-    // //播完后回放
-    // lv_anim_set_playback_delay(&a, 0);
-    // lv_anim_set_playback_time(&a, 100);
+    lv_anim_t a;
+    lv_anim_init(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)anim_size_cb);
+    lv_anim_set_var(&a, img[i]);
+    lv_anim_set_delay(&a, 400);
+    lv_anim_set_time(&a, 100);
+    //播完后回放
+    lv_anim_set_playback_delay(&a, 0);
+    lv_anim_set_playback_time(&a, 100);
 
-    // //线性动画
+    //线性动画
     // lv_anim_path_t path;
     // lv_anim_path_init(&path);
     // lv_anim_path_set_cb(&path, lv_anim_path_linear);
-    // lv_anim_set_path(&a, &path);
+    lv_anim_set_path_cb(&a, lv_anim_path_linear);
 
-    // lv_anim_set_values(&a, 50, 56);
-    // lv_anim_start(&a);
+    lv_anim_set_values(&a, 50, 56);
+    lv_anim_start(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_x);
-    // lv_anim_set_values(&a, lv_obj_get_x(img[i]), lv_obj_get_x(img[i]) - 3);
-    // lv_anim_start(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_x);
+    lv_anim_set_values(&a, lv_obj_get_x(img[i]), lv_obj_get_x(img[i]) - 3);
+    lv_anim_start(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_y);
-    // lv_anim_set_values(&a, lv_obj_get_y(img[i]), lv_obj_get_y(img[i]) - 3);
-    // lv_anim_start(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_obj_set_y);
+    lv_anim_set_values(&a, lv_obj_get_y(img[i]), lv_obj_get_y(img[i]) - 3);
+    lv_anim_start(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_img_set_offset_x);
-    // lv_anim_set_values(&a, 0, 3);
-    // lv_anim_start(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_img_set_offset_x);
+    lv_anim_set_values(&a, 0, 3);
+    lv_anim_start(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_img_set_offset_y);
-    // lv_anim_set_values(&a, 0, 3);
-    // lv_anim_start(&a);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)lv_img_set_offset_y);
+    lv_anim_set_values(&a, 0, 3);
+    lv_anim_start(&a);
 }
 
 /*
@@ -159,29 +159,29 @@ void zoom(int i)
  */
 void move(int i, lv_anim_exec_xcb_t direction, int dist)
 {
-    // lv_anim_t a;
-    // lv_anim_init(&a);
+    lv_anim_t a;
+    lv_anim_init(&a);
 
-    // lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)direction);
-    // lv_anim_set_var(&a, img[i]);
-    // lv_anim_set_time(&a, 500);
-    // if (direction == (lv_anim_exec_xcb_t)lv_obj_set_x)
-    // {
-    //     lv_anim_set_values(&a, lv_obj_get_x(img[i]), lv_obj_get_x(img[i]) + dist * 58);
-    // }
-    // else
-    // {
-    //     lv_anim_set_values(&a, lv_obj_get_y(img[i]), lv_obj_get_y(img[i]) + dist * 58);
-    // }
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)direction);
+    lv_anim_set_var(&a, img[i]);
+    lv_anim_set_time(&a, 500);
+    if (direction == (lv_anim_exec_xcb_t)lv_obj_set_x)
+    {
+        lv_anim_set_values(&a, lv_obj_get_x(img[i]), lv_obj_get_x(img[i]) + dist * 58);
+    }
+    else
+    {
+        lv_anim_set_values(&a, lv_obj_get_y(img[i]), lv_obj_get_y(img[i]) + dist * 58);
+    }
 
     // lv_anim_path_t path;
     // lv_anim_path_init(&path);
     // //渐进效果
     // lv_anim_path_set_cb(&path, lv_anim_path_ease_in);
-    // /* 在动画中设置路径 */
-    // lv_anim_set_path(&a, &path);
+    /* 在动画中设置路径 */
+    lv_anim_set_path_cb(&a, lv_anim_path_ease_in);
 
-    // lv_anim_start(&a);
+    lv_anim_start(&a);
 }
 
 //获取图片内容对象
@@ -237,7 +237,7 @@ void showBoard(int *map)
  */
 void showAnim(int *animMap, int direction, int newborn, int *map)
 {
-    lv_anim_exec_xcb_t Normal;
+    lv_anim_exec_xcb_t Normal = NULL;
     switch (direction)
     {
     case 1:

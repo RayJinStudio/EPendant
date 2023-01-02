@@ -24,7 +24,7 @@ static gpio_num_t KeyIO = (gpio_num_t)0;
 static gpio_num_t KeyIO8 = (gpio_num_t)8;
 static gpio_num_t KeyIO18 = (gpio_num_t)18;
 
-AppController* appctrl;
+AppController* appctrl = NULL;
 
 extern void guiTask1(void *pvParameter);
 

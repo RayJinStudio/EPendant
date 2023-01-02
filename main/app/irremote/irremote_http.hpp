@@ -6,6 +6,7 @@ struct HttpPostEntity
     char *url;
     char *body;
     void (*postCb) (int, char*);
+    int a;
 };
 
 void initPostEntitry(HttpPostEntity* entity);
